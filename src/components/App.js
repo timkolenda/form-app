@@ -16,7 +16,7 @@ class App extends Component {
         consentProvider: '',
         numberOfDependants: 0,
         consentorIsRecievingVaccine: false,
-        vaccineRecipiantInfo: {}
+        vaccineRecipiantInfo: []
     }
 
     questionList = ['Who are you providing consent for today?', 'Question2'];
@@ -41,6 +41,12 @@ class App extends Component {
         }, () => testValue());
     }
 
+    handleChangeRadio = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
+
 
     render() {
         return(
@@ -51,10 +57,11 @@ class App extends Component {
                 <div className="AnswerContainer">
                     {this.state.questionNumber === 0 ? 
                     < WhoIsGettingVaccinated 
-                        handleChange={this.handleChange}
+                        handleChangeRadio={this.handleChangeRadio}
                         includeConsentProvider={this.includeConsentProvider}
                         consentorIsRecievingVaccine={this.state.consentorIsRecievingVaccine}
                         handleQuestionSubmit={this.handleQuestionSubmit}
+                        numberOfDependants={this.state.numberOfDependants}
                     / > : ''}
                 </div>
                 {/* <div className="submitButton">
