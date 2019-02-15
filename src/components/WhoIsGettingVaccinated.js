@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import Button from './Button';
-import DependantName from './DependantName';
 
 
 class WhoIsGettingVaccinated extends Component {
@@ -12,10 +11,16 @@ class WhoIsGettingVaccinated extends Component {
         this.setState({
             responseNumber
         }, () => {
-            if (responseNumber === 2) {
+            if (responseNumber === 1) {
                 this.props.includeConsentProvider();
-            } else if (responseNumber === 3) {
-                this.props.handleQuestionSubmit()
+                this.props.includeDependants();
+                this.props.moveToNextQuestion();
+            } else if (responseNumber === 2) {
+                this.props.includeDependants();
+                this.props.moveToNextQuestion();
+            } else {
+                this.props.includeConsentProvider();
+                this.props.moveToNextQuestion();
             }
         });
     }
@@ -24,12 +29,13 @@ class WhoIsGettingVaccinated extends Component {
     render() {
         return (
             < div className = "whoIsGettingVaccinated" >
-            
+                <div className="question">
+                    <h2>Who are you providing consent for today?</h2>
+                </div>
                 <div className="whoIsGettingVaccinated__answerOptions">
                     < Button 
                         description="Both myself, and my dependant(s)"
                         onClickAction={() => this.handleResponse(1)}
-                        //Collect First and last names
                     / >
                     < Button 
                         description="I am consenting on behalf of my dependant(s)" 
@@ -40,11 +46,6 @@ class WhoIsGettingVaccinated extends Component {
                         onClickAction={() => this.handleResponse(3)}
                     / >
                 </div>                
-
-        
-                {/* {this.state.responseNumber === 0 ? this.renderAnswerOptions() : ''}
-                {(this.state.responseNumber === 1 || this.state.responseNumber === this.state.responseNumber === 2)? this.renderNumberOfDependantsFeild() : ''} */}
-                
             </div>
         );
     }

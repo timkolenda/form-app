@@ -2,10 +2,9 @@ import './styles/App.css';
 import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 
-import Input from './Input';
 import Button from './Button';
-import Question from './Question';
 import WhoIsGettingVaccinated from './WhoIsGettingVaccinated';
+import Screening from './Screening';
 
 
 
@@ -13,10 +12,10 @@ import WhoIsGettingVaccinated from './WhoIsGettingVaccinated';
 class App extends Component {
     state = {
         questionNumber: 0,
-        consentProvider: '',
+        consentProvider: null,
         consentorIsRecievingVaccine: false,
         dependantsExist: false,
-        vaccineRecipiantInfo: []
+        vaccineReceipiantInfo: []
     }
 
     questionList = ['Who are you providing consent for today?', 'Question2'];
@@ -33,48 +32,55 @@ class App extends Component {
         });
     }
 
+    addNewVaccineRecipiant = (firstName, lastName) => {
+        const updateVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
+        updateVaccineReceipiantInfo.push({
+            firstName, 
+            lastName
+        });
+        this.setState({ vaccineReceipiantInfo: updateVaccineReceipiantInfo });
+    }
 
-    handleQuestionSubmit = () => {
+    
+
+
+    //consider just rendering questions based on state rather than moving through an array
+    moveToNextQuestion = () => {
         const nextQuestionNumber = this.state.questionNumber + 1;
         this.setState({
             questionNumber: nextQuestionNumber
-        }, () => console.log(this.state.questionNumber));
+        });
     }
 
-    handleChange = (e, testValue) => {
+    handleChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
-        }, () => testValue());
+        });
     }
 
-    // handleChangeRadio = (e) => {
-    //     this.setState({
-    //         [e.target.name]: e.target.value
-    //     });
-    // }
 
 
     render() {
         return(
             <div className="app">
-                <div className="questionContainer">
-                    <Question question={this.questionList[this.state.questionNumber]} />
-                </div>
                 <div className="AnswerContainer">
                     {this.state.questionNumber === 0 ? 
                     < WhoIsGettingVaccinated 
                         includeConsentProvider={this.includeConsentProvider}
                         includeDependants={this.includeDependants}
                         consentorIsRecievingVaccine={this.state.consentorIsRecievingVaccine}
-                        handleQuestionSubmit={this.handleQuestionSubmit}
+                        moveToNextQuestion={this.moveToNextQuestion}
+                    / > : ''}
+                    {this.state.questionNumber === 1 ? 
+                    <Screening
+                        moveToNextQuestion={this.moveToNextQuestion}
+                        consentProvider={this.state.consentProvider}
+                        consentorIsRecievingVaccine={this.state.consentorIsRecievingVaccine}
+                        dependantsExist={this.state.dependantsExist}
+                        addNewVaccineRecipiant={this.addNewVaccineRecipiant}
+                        
                     / > : ''}
                 </div>
-                {/* <div className="submitButton">
-                    <Button 
-                        description="Next Question"
-                        onClickAction={this.handleQuestionSubmit}
-                    />
-                </div> */}
             </div>
         );
     } 
