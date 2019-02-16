@@ -12,7 +12,8 @@ class InfoCollector extends Component {
         telephoneNumber: '',
         relationToDependants: '',
         saveAddress: false,
-        saveNumber: false
+        saveNumber: false,
+        consentGranted: false
     }
     
     handleChange = (e) => {
@@ -31,8 +32,23 @@ class InfoCollector extends Component {
         // , () => this.props.storeReusableInfo(save, state, value) //cool idea - needs work.
         );
     }
-
     //think about a way to update saved value when its changed after the checkbox is clicked
+
+    handleRadioChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
+
+    setConsentProvider = () => {
+        if (this.props.consentProvider === "") {
+            this.setState({
+                consenterFirstName: this.props.defaultFirstName,
+                consenterLastName: this.props.defaultLastName
+            }, this.props.addConsentProvider(this.state.consenterFirstName, this.state.consenterLastName));
+        }
+    }
+
 
     handleAddDependant = () => {
         if (this.state.saveAddress) {
@@ -48,8 +64,10 @@ class InfoCollector extends Component {
                 healthCard: this.state.healthCard,
                 dateOfBirth: this.state.dateOfBirth,
                 address: this.state.address,
-                telephoneNumber: this.state.telephoneNumber
-            });
+                telephoneNumber: this.state.telephoneNumber,
+                consentProvider: `${this.state.consenterFirstName} ${this.state.consenterLastName}`,
+                consentGranted: this.state.consentGranted
+            });   
         }
         this.props.showScreening();
     }
@@ -61,11 +79,15 @@ class InfoCollector extends Component {
             healthCard: this.state.healthCard,
             dateOfBirth: this.state.dateOfBirth,
             address: this.state.address,
-            telephoneNumber: this.state.telephoneNumber
+            telephoneNumber: this.state.telephoneNumber,
+            consentProvider: `${this.state.consenterFirstName} ${this.state.consenterLastName}`,
+            consentGranted: this.state.consentGranted
         });
     }
     
-    
+    componentDidMount() {
+        this.setConsentProvider();
+    }
     
     render() {
         return (
@@ -119,13 +141,39 @@ class InfoCollector extends Component {
                         </div>
                     </div>
                     }
+                    {!this.props.consentProvider ?
+                    <div className="infoCollector__guardianInfo">
+                        <div className="infoItem">
+                            <p>Relationship to Dependant(s)</p>
+                            <div className="infoCollector__relationshipOptions">
+                                <label htmlFor="parent">Parent</label>
+                                <input type="radio" name="relationToDependants" id="parent" onChange={this.handleRadioChange} value="parent"/>
+                                <label htmlFor="guardian">Guardian</label>
+                                <input type="radio" name="relationToDependants" id="guardian" onChange={this.handleRadioChange} value="guardian"/>
+                                <label htmlFor="other">Other</label>
+                                <input type="text" name="relationToDependants" id="other" onChange={this.handleRadioChange} />
+                            </div>
+                        </div>
+                    </div>
+                    :
+                    <div className="infoCollector__gardianInfo">
+                        <p>{`I, ${this.props.consentProvider} give consent for the above patient to receive their vaccination.`}</p>
+                        <label htmlFor="consentGranted">Check for yes</label>
+                        <input type="checkbox" id="consentGranted"  onClick={this.handleCheckBoxChange}/>
+                    </div>
+                    
+                    }
                 </form>
                 {this.props.dependantsExist ? 
                 <Button 
                     description="Add a dependant"
                     onClickAction={this.handleAddDependant}
                 /> : null}
-                <Button description="Complete" onClickAction={this.handleComplete}/>
+                {(this.props.dependantsExist && this.props.numberOfPatients > 1) || !this.props.dependantsExist ?
+                <Button 
+                    description="Complete" 
+                    onClickAction={this.handleComplete}
+                /> : null}
             </div>
         );
     }

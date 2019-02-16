@@ -16,7 +16,7 @@ class App extends Component {
         showScreeningQuestions: false,
         showInfoCollector: false,
         questionNumber: 0,
-        consentProvider: null,
+        consentProvider: '',
         consenterIsRecievingVaccine: false,
         dependantsExist: false,
         vaccineReceipiantInfo: [],
@@ -24,12 +24,15 @@ class App extends Component {
         telephoneNumberSaved: ''
     }
 
-    questionList = ['Who are you providing consent for today?', 'Question2'];
 
     includeConsentProvider = () => {
         this.setState({
             consenterIsRecievingVaccine: true
         });
+    }
+
+    addConsentProvider = (name) => {
+        this.setState({ consentProvider: name });
     }
 
     includeDependants = () => {
@@ -45,7 +48,6 @@ class App extends Component {
             this.setState({ [`${state}Saved`]: '' });
         }
     }
-    
 
     addNewVaccineRecipiant = (firstName, lastName) => {
         const updateVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
@@ -53,7 +55,11 @@ class App extends Component {
         this.setState({ vaccineReceipiantInfo: updateVaccineReceipiantInfo });
     }
 
-    addPatientDetails = ({ firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber }) => {
+    addPatientDetails = ({ firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber, consentProvider, consentGranted }) => {
+        if (this.state.consentProvider === '') {
+            console.log('run');
+            this.addConsentProvider(consentProvider);
+        }
         if (telephoneNumber === '') {
             telephoneNumber = this.state.telephoneNumberSaved;
         }
@@ -61,15 +67,21 @@ class App extends Component {
             address = this.state.telephoneNumberSaved;
         }
         const updatedVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
-        // console.log(firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber);
         const patientRecord = updatedVaccineReceipiantInfo.filter(infoItem => {
             return infoItem.firstName === firstName && infoItem.lastName === lastName;
         });
+        if (this.state.consentProvider) {
+            patientRecord[0].consentProvidedBy = this.state.consentProvider;
+        } else {
+            patientRecord[0].consentProvidedBy = consentProvider; 
+        }
+        patientRecord[0].consentGranted = consentGranted;
         patientRecord[0].healthCard = healthCard;
         patientRecord[0].dateOfBirth = dateOfBirth;
         patientRecord[0].address = address;
         patientRecord[0].telephoneNumber = telephoneNumber;
-        console.log(this.state.vaccineReceipiantInfo);
+        this.setState({ vaccineReceipiantInfo: updatedVaccineReceipiantInfo });
+        console.table(this.state.vaccineReceipiantInfo);
     }
 
 
@@ -101,7 +113,7 @@ class App extends Component {
         });
     }
 
-
+    
 
     render() {
         return (
@@ -129,6 +141,7 @@ class App extends Component {
                     {this.state.showInfoCollector ? 
                     <InfoCollector
                         consenterIsRecievingVaccine={this.state.consenterIsRecievingVaccine}
+                        consentProvider={this.state.consentProvider}
                         defaultFirstName={this.state.vaccineReceipiantInfo[0] ? this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].firstName : null}
                         defaultLastName={this.state.vaccineReceipiantInfo[0] ? this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].lastName : null}
                         storeReusableInfo={this.storeReusableInfo}
@@ -138,6 +151,8 @@ class App extends Component {
                         aVaccineRecipiantHasBeenCreated={this.state.vaccineReceipiantInfo[0]}
                         addPatientDetails={this.addPatientDetails}
                         showScreening={this.showScreening}
+                        addConsentProvider={this.addConsentProvider}
+                        numberOfPatients={this.state.vaccineReceipiantInfo.length}
                     / > : null}
                 </div>
             </div>
