@@ -14,13 +14,13 @@ class WhoIsGettingVaccinated extends Component {
             if (responseNumber === 1) {
                 this.props.includeConsentProvider();
                 this.props.includeDependants();
-                this.props.moveToNextQuestion();
+                this.props.showScreening();
             } else if (responseNumber === 2) {
                 this.props.includeDependants();
                 this.props.moveToNextQuestion();
             } else {
                 this.props.includeConsentProvider();
-                this.props.moveToNextQuestion();
+                this.props.showScreening();
             }
         });
     }

@@ -8,8 +8,8 @@ const ScreeningQuestion = ({ handleRadioChange, question, inputName }) => {
                 <p>{question}</p>
             </div>
             <div className="screeningQuestion__answerOptions">
-                <input type="radio" name={inputName} value="yes" onChange={handleRadioChange}/>
-                <input type="radio" name={inputName} value="no" onChange={handleRadioChange}/>
+                <input type="radio" name={inputName} value="yes" onChange={(e) => handleRadioChange(e)}/>
+                <input type="radio" name={inputName} value="no" onChange={(e) => handleRadioChange(e)}/>
             </div>
         </div>
     );

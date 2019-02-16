@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import Button from './Button';
 import ScreeningQuestion from './ScreeningQuestion';
+import DoesNotQualify from './DoesNotQualify';
 
 
 class Screening extends Component {
@@ -28,41 +29,37 @@ class Screening extends Component {
         `Have ${this.props.consentProvider ? 'they' : 'you'} ever had Guillain-Barré syndrome?`
     ]
 
-    renderScreeningQuestions = () => {
-        this.screeningQuestions.map(question => {
-            console.log(question);
-            return (
-                <ScreeningQuestion
-                    question={question}
-                    inputName={`screeningQuestion${(this.screeningQuestions.indexOf(question)) + 1}`}
-                    handleRadioChange={this.handleRadioChange}
-                />
-            );
-        });
+    handleByPass = () => {
+        if(this.state.firstName && this.state.lastName) {
+            this.props.addNewVaccineRecipiant(this.state.firstName, this.state.lastName);
+        }    
     }
 
-    handleByPass = () => {
-        this.props.addNewVaccineRecipiant(this.state.firstName, this.state.lastName);
-    }
+
 
     handleChange = (e) => {
         this.setState({ [e.target.id]: e.target.value });
     }
 
     handleRadioChange = (e) => {
-        this.setState({ [e.target.name]: e.target.value }, () => {
-            if (e.target.value === 'no') {
+        let stateName = e.target.name;
+        let stateValue = e.target.value;
+        this.setState({ [stateName]: stateValue }, () => {
+            if (stateValue === 'no') {
                 this.setState({ qualifies: false });
+            }
+            if (this.state.screeningQuestion1 === 'yes' && this.state.screeningQuestion2 === 'yes' && this.state.screeningQuestion3 === 'yes' && this.state.screeningQuestion4 === 'yes' && this.state.screeningQuestion5 === 'yes' && this.state.screeningQuestion6 === 'yes' && this.state.screeningQuestion7 === 'yes' && this.state.firstName && this.state.lastName) {
+                this.props.addNewVaccineRecipiant(this.state.firstName, this.state.lastName);
             }
         });
     }
 
     renderInstructions = () => {
-        if (this.props.consentorIsRecievingVaccine && this.props.dependantsExist) {
+        if (this.props.consenterIsRecievingVaccine && this.props.dependantsExist) {
             return (
                 <h2>Starting with yourself, please provide the following information</h2>
             );
-        } else if (this.props.consentorIsRecievingVaccine) {
+        } else if (this.props.consenterIsRecievingVaccine) {
             return (
                 <h2>Please provide the following information</h2>
             );
@@ -73,36 +70,62 @@ class Screening extends Component {
         }
     }
 
+    renderScreeningQuestions = () => {
+        const renderedQuestions = this.screeningQuestions.map((question) => {
+            return (
+                <ScreeningQuestion
+                    question={question}
+                    inputName={`screeningQuestion${(this.screeningQuestions.indexOf(question)) + 1}`}
+                    handleRadioChange={this.handleRadioChange}
+                    key={this.screeningQuestions.indexOf(question)}
+                />
+            );
+        });
+        return renderedQuestions;
+    }
+
 
     render() {
         return(
             <div className="screening">
-                <div className="screening__instructions">
-                    {this.renderInstructions()}
-                </div>
-                <form action="" className="screening__name">
-                    < div className = "screening__name--first" >
-                        <label htmlFor="firstName">First Name</label>
-                        <input type="text" id="firstName" onChange={this.handleChange} value={this.state.firstName} />
+                {this.state.qualifies ? (
+                <div className="screening__questionnaire">
+                    <div className="screening__instructions">
+                        {this.renderInstructions()}
                     </div>
-                    < div className = "screening__name--last" >
-                        <label htmlFor="lastName">Last Name</label>
-                        <input type="text" id="lastName" onChange={this.handleChange} value={this.state.lastName}/>
-                    </div>
-                </form>
-                <form className="screening__questions">
-                    <div className="screening__columnHeadings">
-                        <h3>Questions</h3>
-                        <div className="screening__inputTitles">
-                            <h3>Yes</h3>
-                            <h3>No</h3>
+                    <form action="" className="screening__name">
+                        < div className = "screening__name--first" >
+                            <label htmlFor="firstName">First Name</label>
+                            <input type="text" id="firstName" onChange={this.handleChange} value={this.state.firstName} />
                         </div>
+                        < div className = "screening__name--last" >
+                            <label htmlFor="lastName">Last Name</label>
+                            <input type="text" id="lastName" onChange={this.handleChange} value={this.state.lastName}/>
+                        </div>
+                    </form>
+                    <form className="screening__questions">
+                        <div className="screening__columnHeadings">
+                            <h3>Questions</h3>
+                            <div className="screening__inputTitles">
+                                <h3>Yes</h3>
+                                <h3>No</h3>
+                            </div>
+                        </div>
+                        {this.renderScreeningQuestions()}
+                    </form>
+                    <div className="screening__byPass">
+                        <Button description={'No to all'} onClickAction={this.handleByPass} />
                     </div>
-                    {this.renderScreeningQuestions()}
-                </form>
-                <div className="screening__byPass">
-                    <Button description={'No to all'} onClickAction={this.handleByPass} />
                 </div>
+                ) : ''}
+                {!this.state.qualifies ? (
+                    <DoesNotQualify 
+                        consenterIsRecievingVaccine={this.props.consenterIsRecievingVaccine}
+                        dependantsExist={this.props.dependantsExist}
+                        consentProvider={this.props.consentProvider}
+                        resetForm={this.props.resetForm}
+                    />
+                ) : ''}
             </div>
         )
     }

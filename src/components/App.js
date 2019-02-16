@@ -5,15 +5,19 @@ import ReactDOM from 'react-dom';
 import Button from './Button';
 import WhoIsGettingVaccinated from './WhoIsGettingVaccinated';
 import Screening from './Screening';
+import InfoCollector from './InfoCollector';
 
 
 
 
 class App extends Component {
     state = {
+        showWhoIsGettingVaccinatedOptions: true,
+        showScreeningQuestions: false,
+        showInfoCollector: false,
         questionNumber: 0,
         consentProvider: null,
-        consentorIsRecievingVaccine: false,
+        consenterIsRecievingVaccine: false,
         dependantsExist: false,
         vaccineReceipiantInfo: []
     }
@@ -22,7 +26,7 @@ class App extends Component {
 
     includeConsentProvider = () => {
         this.setState({
-            consentorIsRecievingVaccine: true
+            consenterIsRecievingVaccine: true
         });
     }
 
@@ -33,6 +37,7 @@ class App extends Component {
     }
 
     addNewVaccineRecipiant = (firstName, lastName) => {
+        console.log('run');
         const updateVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
         updateVaccineReceipiantInfo.push({
             firstName, 
@@ -41,44 +46,63 @@ class App extends Component {
         this.setState({ vaccineReceipiantInfo: updateVaccineReceipiantInfo });
     }
 
-    
 
-
-    //consider just rendering questions based on state rather than moving through an array
-    moveToNextQuestion = () => {
-        const nextQuestionNumber = this.state.questionNumber + 1;
+    showScreening = () => {
         this.setState({
-            questionNumber: nextQuestionNumber
+            showWhoIsGettingVaccinatedOptions: false,
+            showInfoCollector: false,
+            showScreeningQuestions: true
         });
-    }
+    } 
 
-    handleChange = (e) => {
+    showInfoCollector = () => {
         this.setState({
-            [e.target.id]: e.target.value
+            showWhoIsGettingVaccinatedOptions: false,
+            showInfoCollector: true,
+            showScreeningQuestions: false
+        });
+    } 
+
+    resetForm = () => {
+        this.setState({
+            showWhoIsGettingVaccinatedOptions: true,
+            showScreeningQuestions: false,
+            questionNumber: 0,
+            consentProvider: null,
+            consenterIsRecievingVaccine: false,
+            dependantsExist: false,
+            vaccineReceipiantInfo: []
         });
     }
 
 
 
     render() {
-        return(
+        return (
             <div className="app">
                 <div className="AnswerContainer">
-                    {this.state.questionNumber === 0 ? 
+                    {this.state.showWhoIsGettingVaccinatedOptions ? 
                     < WhoIsGettingVaccinated 
                         includeConsentProvider={this.includeConsentProvider}
                         includeDependants={this.includeDependants}
-                        consentorIsRecievingVaccine={this.state.consentorIsRecievingVaccine}
+                        consenterIsRecievingVaccine={this.state.consenterIsRecievingVaccine}
                         moveToNextQuestion={this.moveToNextQuestion}
+                        showScreening={this.showScreening}
                     / > : ''}
-                    {this.state.questionNumber === 1 ? 
+                    {this.state.showScreeningQuestions ? 
                     <Screening
                         moveToNextQuestion={this.moveToNextQuestion}
                         consentProvider={this.state.consentProvider}
-                        consentorIsRecievingVaccine={this.state.consentorIsRecievingVaccine}
+                        consenterIsRecievingVaccine={this.state.consenterIsRecievingVaccine}
                         dependantsExist={this.state.dependantsExist}
                         addNewVaccineRecipiant={this.addNewVaccineRecipiant}
-                        
+                        resetForm={this.resetForm}
+                    / > : ''}
+                    {this.state.showInfoCollector ? 
+                    <InfoCollector
+                        consenterIsRecievingVaccine={this.state.consenterIsRecievingVaccine}
+                        defaultFirstName={this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].firstName || ''}
+                        defaultFirstName={this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].lastName || ''}
                     / > : ''}
                 </div>
             </div>
