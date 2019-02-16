@@ -19,7 +19,9 @@ class App extends Component {
         consentProvider: null,
         consenterIsRecievingVaccine: false,
         dependantsExist: false,
-        vaccineReceipiantInfo: []
+        vaccineReceipiantInfo: [],
+        addressSaved: '',
+        telephoneNumberSaved: ''
     }
 
     questionList = ['Who are you providing consent for today?', 'Question2'];
@@ -36,14 +38,38 @@ class App extends Component {
         });
     }
 
+    storeReusableInfo = (save, state, value) => {
+        if (save) {
+            this.setState({ [`${state}Saved`]: value });
+        } else {
+            this.setState({ [`${state}Saved`]: '' });
+        }
+    }
+    
+
     addNewVaccineRecipiant = (firstName, lastName) => {
-        console.log('run');
         const updateVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
-        updateVaccineReceipiantInfo.push({
-            firstName, 
-            lastName
-        });
+        updateVaccineReceipiantInfo.push({ firstName, lastName });
         this.setState({ vaccineReceipiantInfo: updateVaccineReceipiantInfo });
+    }
+
+    addPatientDetails = ({ firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber }) => {
+        if (telephoneNumber === '') {
+            telephoneNumber = this.state.telephoneNumberSaved;
+        }
+        if (address === '') {
+            address = this.state.telephoneNumberSaved;
+        }
+        const updatedVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
+        // console.log(firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber);
+        const patientRecord = updatedVaccineReceipiantInfo.filter(infoItem => {
+            return infoItem.firstName === firstName && infoItem.lastName === lastName;
+        });
+        patientRecord[0].healthCard = healthCard;
+        patientRecord[0].dateOfBirth = dateOfBirth;
+        patientRecord[0].address = address;
+        patientRecord[0].telephoneNumber = telephoneNumber;
+        console.log(this.state.vaccineReceipiantInfo);
     }
 
 
@@ -88,7 +114,8 @@ class App extends Component {
                         consenterIsRecievingVaccine={this.state.consenterIsRecievingVaccine}
                         moveToNextQuestion={this.moveToNextQuestion}
                         showScreening={this.showScreening}
-                    / > : ''}
+                        showInfoCollector={this.showInfoCollector}
+                    / > : null}
                     {this.state.showScreeningQuestions ? 
                     <Screening
                         moveToNextQuestion={this.moveToNextQuestion}
@@ -97,13 +124,21 @@ class App extends Component {
                         dependantsExist={this.state.dependantsExist}
                         addNewVaccineRecipiant={this.addNewVaccineRecipiant}
                         resetForm={this.resetForm}
-                    / > : ''}
+                        showInfoCollector={this.showInfoCollector}
+                    / > : null}
                     {this.state.showInfoCollector ? 
                     <InfoCollector
                         consenterIsRecievingVaccine={this.state.consenterIsRecievingVaccine}
-                        defaultFirstName={this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].firstName || ''}
-                        defaultFirstName={this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].lastName || ''}
-                    / > : ''}
+                        defaultFirstName={this.state.vaccineReceipiantInfo[0] ? this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].firstName : null}
+                        defaultLastName={this.state.vaccineReceipiantInfo[0] ? this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].lastName : null}
+                        storeReusableInfo={this.storeReusableInfo}
+                        telephoneNumberSaved={this.state.telephoneNumberSaved}
+                        addressSaved={this.state.addressSaved}
+                        dependantsExist={this.state.dependantsExist}
+                        aVaccineRecipiantHasBeenCreated={this.state.vaccineReceipiantInfo[0]}
+                        addPatientDetails={this.addPatientDetails}
+                        showScreening={this.showScreening}
+                    / > : null}
                 </div>
             </div>
         );

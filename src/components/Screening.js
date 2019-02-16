@@ -32,10 +32,9 @@ class Screening extends Component {
     handleByPass = () => {
         if(this.state.firstName && this.state.lastName) {
             this.props.addNewVaccineRecipiant(this.state.firstName, this.state.lastName);
+            this.props.showInfoCollector();
         }    
     }
-
-
 
     handleChange = (e) => {
         this.setState({ [e.target.id]: e.target.value });
@@ -50,6 +49,7 @@ class Screening extends Component {
             }
             if (this.state.screeningQuestion1 === 'yes' && this.state.screeningQuestion2 === 'yes' && this.state.screeningQuestion3 === 'yes' && this.state.screeningQuestion4 === 'yes' && this.state.screeningQuestion5 === 'yes' && this.state.screeningQuestion6 === 'yes' && this.state.screeningQuestion7 === 'yes' && this.state.firstName && this.state.lastName) {
                 this.props.addNewVaccineRecipiant(this.state.firstName, this.state.lastName);
+                this.props.showInfoCollector();
             }
         });
     }
@@ -117,7 +117,7 @@ class Screening extends Component {
                         <Button description={'No to all'} onClickAction={this.handleByPass} />
                     </div>
                 </div>
-                ) : ''}
+                ) : null}
                 {!this.state.qualifies ? (
                     <DoesNotQualify 
                         consenterIsRecievingVaccine={this.props.consenterIsRecievingVaccine}
@@ -125,7 +125,7 @@ class Screening extends Component {
                         consentProvider={this.props.consentProvider}
                         resetForm={this.props.resetForm}
                     />
-                ) : ''}
+                ) : null}
             </div>
         )
     }

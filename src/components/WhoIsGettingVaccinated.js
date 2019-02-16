@@ -17,7 +17,7 @@ class WhoIsGettingVaccinated extends Component {
                 this.props.showScreening();
             } else if (responseNumber === 2) {
                 this.props.includeDependants();
-                this.props.moveToNextQuestion();
+                this.props.showInfoCollector();
             } else {
                 this.props.includeConsentProvider();
                 this.props.showScreening();
