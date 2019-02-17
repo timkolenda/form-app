@@ -1,9 +1,13 @@
 .app {
     min-height: 100vh;
     margin: 0 auto;
-    width: 800px;
+    // min-width: 600px;
+    max-width: 80%;
     font-family: 'Open Sans', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
+    .answerContainer {
+        min-width: 700px;
+    }
 }

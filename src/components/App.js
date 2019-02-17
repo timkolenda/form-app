@@ -23,7 +23,9 @@ class App extends Component {
         vaccineReceipiantInfo: [],
         addressSaved: '',
         telephoneNumberSaved: '',
-        autoApproveScreening: false
+        autoApproveScreening: false,
+        defaultFirstName: '',
+        defaultLastName: ''
     }
 
 
@@ -55,7 +57,18 @@ class App extends Component {
     addNewVaccineRecipiant = (firstName, lastName) => {
         const updateVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
         updateVaccineReceipiantInfo.push({ firstName, lastName });
-        this.setState({ vaccineReceipiantInfo: updateVaccineReceipiantInfo });
+        this.setState({ 
+            vaccineReceipiantInfo: updateVaccineReceipiantInfo,
+            defaultFirstName: firstName,
+            defaultLastName: lastName
+        });
+    }
+
+    removeDefaultNames = () => {
+        this.setState({ 
+            defaultFirstName: '',
+            defaultLastName: ''
+        });
     }
 
     addPatientDetails = ({ firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber, consentProvider, consentGranted }) => {
@@ -141,7 +154,7 @@ class App extends Component {
     render() {
         return (
             <div className="app">
-                <div className="AnswerContainer">
+                <div className="answerContainer">
                     {this.state.showWhoIsGettingVaccinatedOptions ? 
                     < WhoIsGettingVaccinated 
                         includeConsentProvider={this.includeConsentProvider}
@@ -166,8 +179,8 @@ class App extends Component {
                     <InfoCollector
                         consenterIsRecievingVaccine={this.state.consenterIsRecievingVaccine}
                         consentProvider={this.state.consentProvider}
-                        defaultFirstName={this.state.vaccineReceipiantInfo[0] ? this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].firstName : null}
-                        defaultLastName={this.state.vaccineReceipiantInfo[0] ? this.state.vaccineReceipiantInfo[(this.state.vaccineReceipiantInfo.length - 1)].lastName : null}
+                        defaultFirstName={this.state.defaultFirstName}
+                        defaultLastName={this.state.defaultLastName}
                         storeReusableInfo={this.storeReusableInfo}
                         telephoneNumberSaved={this.state.telephoneNumberSaved}
                         addressSaved={this.state.addressSaved}
@@ -178,6 +191,7 @@ class App extends Component {
                         addConsentProvider={this.addConsentProvider}
                         numberOfPatients={this.state.vaccineReceipiantInfo.length}
                         autoApproveScreening={this.state.autoApproveScreening}
+                        removeDefaultNames={this.removeDefaultNames}
                     / > : null}
                 </div>
             </div>

@@ -72,6 +72,9 @@ class InfoCollector extends Component {
 
 
     handleAddDependant = () => {
+        if (this.props.autoApproveScreening) {
+            this.props.removeDefaultNames();
+        }
         if (this.state.saveAddress) {
             this.props.storeReusableInfo(this.state.saveAddress, 'address', this.state.address);
         }
@@ -140,13 +143,13 @@ class InfoCollector extends Component {
                         <div className="infoCollector__infoItem">
                             <div className="input input__text">
                                 <label htmlFor="infoFirstName">First Name</label>
-                                <input type="text" id="infoFirstName" onChange={this.handleChange} value={this.state.infoFirstName ? this.state.infoFirstName : ((this.props.autoApproveScreening && this.props.numberOfPatients > 1) ? this.state.infoFirstName : this.props.defaultFirstName)} />
+                                <input type="text" id="infoFirstName" onChange={this.handleChange} value={this.props.defaultFirstName ? this.props.defaultFirstName : this.state.firstName} />
                             </div>
                         </div>
                         <div className="infoCollector__infoItem">
                             <div className="input input__text input__text--toEnd">
                                 <label htmlFor="infoLastName">Last Name</label>
-                                <input type="text" id="infoLastName" onChange={this.handleChange} value={this.state.infoLastName ? this.state.infoLastName : ((this.props.autoApproveScreening && this.props.numberOfPatients > 1) ? this.state.infoLastName : this.props.defaultLastName)}/>
+                                <input type="text" id="infoLastName" onChange={this.handleChange} value={this.props.defaultLastName ? this.props.defaultLastName : this.state.lastName}/>
                             </div>
                         </div>
                     </div>
@@ -196,7 +199,7 @@ class InfoCollector extends Component {
                         </div>                    
                     </div>
                     }
-                    {!this.props.consentProvider ?
+                    {!this.props.consentProvider && this.props.dependantsExist ?
                     <div>
                         <div className="infoCollector__sectionHeading">
                             <p>Relationship to Dependant(s)</p>
@@ -226,15 +229,14 @@ class InfoCollector extends Component {
                             : null}
                         </div>
                     </div>
-                    :
+                    : null }
                     <div className="infoCollector__section infoCollector__section--column">
-                        <p>{`I, ${this.props.consentProvider} give consent for the above patient to receive their vaccination.`}</p>
+                        <p>{`I ${this.props.consentProvider} give consent for the above patient to receive their vaccination.`}</p>
                         <div className="input__checkBox input__checkBox--addSpaceBelow">
                             <label htmlFor="consentGranted">Check for yes</label>
                             <input type="checkbox" id="consentGranted"  onClick={this.handleCheckBoxChange}/>
                         </div>
                     </div>
-                    }
                 </form>
                 {this.props.dependantsExist ? 
                 <Button 
