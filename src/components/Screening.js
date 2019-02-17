@@ -90,22 +90,24 @@ class Screening extends Component {
             <div className="screening">
                 {this.state.qualifies ? (
                 <div className="screening__questionnaire">
-                    <div className="screening__instructions">
+                    <div className="question">
                         {this.renderInstructions()}
                     </div>
                     <form action="" className="screening__name">
-                        < div className = "screening__name--first" >
+                        < div className = "input input--withLabel" >
                             <label htmlFor="firstName">First Name</label>
                             <input type="text" id="firstName" onChange={this.handleChange} value={this.state.firstName} />
                         </div>
-                        < div className = "screening__name--last" >
+                        < div className = "input input--withLabel" >
                             <label htmlFor="lastName">Last Name</label>
                             <input type="text" id="lastName" onChange={this.handleChange} value={this.state.lastName}/>
                         </div>
                     </form>
                     <form className="screening__questions">
                         <div className="screening__columnHeadings">
-                            <h3>Questions</h3>
+                            <div class="screening__title">
+                                <h3>Screening Questions</h3>
+                            </div>
                             <div className="screening__inputTitles">
                                 <h3>Yes</h3>
                                 <h3>No</h3>
@@ -114,7 +116,14 @@ class Screening extends Component {
                         {this.renderScreeningQuestions()}
                     </form>
                     <div className="screening__byPass">
-                        <Button description={'No to all'} onClickAction={this.handleByPass} />
+                        {this.props.dependantsExist ? 
+                        <div class="screening__byPassOption">
+                            <Button description={'None of these apply to anyone I am providing consent for'} />
+                        </div>
+                        : null}
+                        <div class="screening__byPassOption">
+                            <Button description={'No to all'} onClickAction={this.handleByPass} />
+                        </div>
                     </div>
                 </div>
                 ) : null}

@@ -1,0 +1,15 @@
+
+.input {
+    display: flex;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    &__checkBox {
+        label {
+            padding-right: 10px;
+            font-size: 12px;
+        }
+    }
+    &--withLabel {
+        flex-direction: column;
+    }
+}

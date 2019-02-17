@@ -1,0 +1,37 @@
+
+
+.screening {
+    &__name {
+        display: flex;
+        padding: 0 10px;
+    }
+    &__columnHeadings {
+        border-bottom: 1px solid black;
+        display: flex;
+        background: navy;
+        color: white;
+        text-transform: uppercase;
+    }
+    &__title {
+        width: 80%;
+        padding: 0 10px;
+    }
+    &__inputTitles {
+        width: 20%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    &__questions {
+        border: 1px solid black;
+        border-bottom: none;
+    }
+    &__byPass {
+        display: flex;
+        justify-content: flex-end;
+    }
+    &__byPassOption {
+        min-width: 20%;
+        margin-left: 10px;
+    }
+}
