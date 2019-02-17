@@ -29,12 +29,17 @@ class Screening extends Component {
         `Have ${this.props.consentProvider ? 'they' : 'you'} ever had Guillain-Barré syndrome?`
     ]
 
-    handleByPass = () => {
+    handleByPass = (e) => {
         if(this.state.firstName && this.state.lastName) {
             this.props.addNewVaccineRecipiant(this.state.firstName, this.state.lastName);
             this.props.showInfoCollector();
-        }    
+        }
+        if (e.target.innerHTML === "None of these apply to anyone I am providing consent for") {
+            this.props.setAutoApproveScreening();
+        }
     }
+
+
 
     handleChange = (e) => {
         this.setState({ [e.target.id]: e.target.value });
@@ -94,18 +99,18 @@ class Screening extends Component {
                         {this.renderInstructions()}
                     </div>
                     <form action="" className="screening__name">
-                        < div className = "input input--withLabel" >
+                        < div className = "input input__text" >
                             <label htmlFor="firstName">First Name</label>
                             <input type="text" id="firstName" onChange={this.handleChange} value={this.state.firstName} />
                         </div>
-                        < div className = "input input--withLabel" >
+                        < div className = "input input__text" >
                             <label htmlFor="lastName">Last Name</label>
                             <input type="text" id="lastName" onChange={this.handleChange} value={this.state.lastName}/>
                         </div>
                     </form>
                     <form className="screening__questions">
                         <div className="screening__columnHeadings">
-                            <div class="screening__title">
+                            <div className="screening__title">
                                 <h3>Screening Questions</h3>
                             </div>
                             <div className="screening__inputTitles">
@@ -117,11 +122,15 @@ class Screening extends Component {
                     </form>
                     <div className="screening__byPass">
                         {this.props.dependantsExist ? 
-                        <div class="screening__byPassOption">
-                            <Button description={'None of these apply to anyone I am providing consent for'} />
+                        <div className="screening__byPassOption">
+                            <Button 
+                                description={'None of these apply to anyone I am providing consent for'} 
+                                onClickAction={this.handleByPass}
+                            />
+
                         </div>
                         : null}
-                        <div class="screening__byPassOption">
+                        <div className="screening__byPassOption">
                             <Button description={'No to all'} onClickAction={this.handleByPass} />
                         </div>
                     </div>

@@ -2,8 +2,22 @@
 .infoCollector {
     &__section {
         display: flex;
+        &--column {
+            flex-direction: column;
+        }
+        & p {
+            margin-bottom: 0;
+        }
+    }
+    &__sectionHeading p {
+        margin: 0px;
     }
     &__infoItem {
         width: 50%;
+        &--radioContainer {
+            display: flex;
+        }
     }
 }
+
+// infoCollector__sectionHeading
