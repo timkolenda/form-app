@@ -6,18 +6,21 @@ const DisplayResults = ({ vaccineReceipiantInfo }) => {
     const renderPatientData = () => {
         let patients = vaccineReceipiantInfo.map(patient => {
             console.log(patient);
-            // if ()
-            return (
-                <ul className="patientInfo">
-                    <li><h3>{`Patient Name: ${patient.firstName} ${patient.lastName}`}</h3></li>
-                    <li><p>{`Date of Birth: ${patient.dateOfBirth}`}</p></li>
-                    <li><p>{`Address: ${patient.address}`}</p></li>
-                    <li><p>{`Phone Number: ${patient.telephoneNumber}`}</p></li>
-                    <li><p>{`Address: ${patient.address}`}</p></li>
-                    <li><p>{`Consent Granted: ${patient.consentGranted}`}</p></li>
-                    <li><p>{`Consent Provided By: ${patient.consentProvidedBy}`}</p></li>
-                </ul>
-            )
+            if (patient.consentGranted) {
+                return (
+                    <div className="patientInfo">
+                        <h3 className="patientInfo__name">{`Patient Name: ${patient.firstName} ${patient.lastName}`}</h3>
+                        <ul className="patientInfo__list">
+                            <li className="patientInfo__listItem"><p>{`Address: ${patient.address}`}</p></li>
+                            <li className="patientInfo__listItem"><p>{`Date of Birth: ${patient.dateOfBirth}`}</p></li>
+                            <li className="patientInfo__listItem"><p>{`Phone Number: ${patient.telephoneNumber}`}</p></li>
+                            <li className="patientInfo__listItem"><p>{`Address: ${patient.address}`}</p></li>
+                            <li className="patientInfo__listItem"><p>{`Consent Granted: ${patient.consentGranted}`}</p></li>
+                            <li className="patientInfo__listItem"><p>{`Consent Provided By: ${patient.consentProvidedBy}`}</p></li>
+                        </ul>
+                    </div>
+                )
+            }
         });
         return patients
     }

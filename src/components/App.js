@@ -20,9 +20,11 @@ class App extends Component {
         showDisplayResults: false,
         questionNumber: 0,
         consentProvider: '',
+        relationToConsentor: "",
         consenterIsRecievingVaccine: false,
         dependantsExist: false,
         vaccineReceipiantInfo: [],
+        consentorDetails: [],
         addressSaved: '',
         telephoneNumberSaved: '',
         autoApproveScreening: false,
@@ -40,8 +42,12 @@ class App extends Component {
     }
 
     addConsentProvider = (name) => {
-        this.setState({ consentProvider: name });
+        this.setState({ 
+            consentProvider: name
+        });
     }
+
+
 
     includeDependants = () => {
         this.setState({ dependantsExist: true });
@@ -73,7 +79,7 @@ class App extends Component {
         });
     }
 
-    addPatientDetails = ({ firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber, consentProvider, consentGranted }) => {
+    addPatientDetails = ({ firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber, consentProvider, consentGranted, relationToDependants }) => {
         console.log(firstName, lastName);
         if (this.state.consentProvider === '') {
             console.log('run apd');
@@ -91,7 +97,6 @@ class App extends Component {
             return infoItem.firstName === firstName && infoItem.lastName === lastName;
         });
         if (patientRecord[0]) {
-            console.log(patientRecord[0]);
             if (this.state.consentProvider) {
                 patientRecord[0].consentProvidedBy = this.state.consentProvider;
             } else {
@@ -102,6 +107,7 @@ class App extends Component {
             patientRecord[0].dateOfBirth = dateOfBirth;
             patientRecord[0].address = address;
             patientRecord[0].telephoneNumber = telephoneNumber;
+            patientRecord[0].relationtoConsentor = relationToDependants;
             this.setState({ vaccineReceipiantInfo: updatedVaccineReceipiantInfo });
             console.table(this.state.vaccineReceipiantInfo);
         } else {
@@ -119,11 +125,11 @@ class App extends Component {
             patientRecord[0].dateOfBirth = dateOfBirth;
             patientRecord[0].address = address;
             patientRecord[0].telephoneNumber = telephoneNumber;
+            patientRecord[0].relationtoConsentor = relationToDependants;
             this.setState({ vaccineReceipiantInfo: updatedVaccineReceipiantInfo });
             console.table(this.state.vaccineReceipiantInfo);
         }
     }
-
 
     showScreening = () => {
         this.setState({
@@ -163,8 +169,6 @@ class App extends Component {
             vaccineReceipiantInfo: []
         });
     }
-
-    
 
     render() {
         return (
@@ -208,6 +212,7 @@ class App extends Component {
                         autoApproveScreening={this.state.autoApproveScreening}
                         removeDefaultNames={this.removeDefaultNames}
                         showDisplayResults={this.showDisplayResults}
+                        // addConsentorDetails={this.addConsentorDetails}
                     / > : null}
                     {this.state.showDisplayResults ? 
                     <DisplayResults 

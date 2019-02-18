@@ -116,7 +116,8 @@ class InfoCollector extends Component {
                 address: this.state.address,
                 telephoneNumber: this.state.telephoneNumber,
                 consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
-                consentGranted: this.state.consentGranted
+                consentGranted: this.state.consentGranted,
+                relationToDependants: this.state.relationToDependants
             });
         } else if (this.props.aVaccineRecipiantHasBeenCreated || this.props.autoApproveScreening) {
             this.props.addPatientDetails({
@@ -127,7 +128,8 @@ class InfoCollector extends Component {
                 address: this.state.address,
                 telephoneNumber: this.state.telephoneNumber,
                 consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
-                consentGranted: this.state.consentGranted
+                consentGranted: this.state.consentGranted,
+                relationToDependants: this.state.relationToDependants
             });
         } 
         if (!this.props.autoApproveScreening) {
@@ -161,7 +163,8 @@ class InfoCollector extends Component {
                 address: this.state.address,
                 telephoneNumber: this.state.telephoneNumber,
                 consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
-                consentGranted: this.state.consentGranted
+                consentGranted: this.state.consentGranted,
+                relationToDependants: this.state.relationToDependants
             });
         } else {
             this.props.addPatientDetails({
@@ -172,7 +175,8 @@ class InfoCollector extends Component {
                 address: this.state.address,
                 telephoneNumber: this.state.telephoneNumber,
                 consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
-                consentGranted: this.state.consentGranted
+                consentGranted: this.state.consentGranted,
+                relationToDependants: this.state.relationToDependants
             });
         }
         this.props.showDisplayResults();

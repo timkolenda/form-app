@@ -4,3 +4,8 @@ article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary
 
 * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 
+li, ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}

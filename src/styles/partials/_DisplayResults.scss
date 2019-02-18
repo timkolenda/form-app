@@ -1,0 +1,25 @@
+.patientInfo {
+    width: 100%;
+    border: black 1px solid;
+    margin-bottom: 20px;
+    &__name {
+        color: white;
+        background: navy;
+        border-bottom: black 1px solid;
+        margin: 0;
+        padding: 10px 0;    
+        padding-left: 10px;
+    }
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    &__listItem {
+        padding-left: 10px;
+        width: 50%;
+        display: flex;
+        // justify-content: flex-start;
+    }
+
+}
+
