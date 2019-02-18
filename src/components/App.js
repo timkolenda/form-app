@@ -72,6 +72,13 @@ class App extends Component {
     }
 
     addPatientDetails = ({ firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber, consentProvider, consentGranted }) => {
+        console.log(firstName, lastName);
+        // if (firstName = '') {
+        //     firstName = this.state.defaultFirstName;
+        // }
+        // if (lastName = '') {
+        //     lastName = this.state.defaultLastName;
+        // }
         if (this.state.consentProvider === '') {
             console.log('run apd');
             this.addConsentProvider(consentProvider);
@@ -82,6 +89,7 @@ class App extends Component {
         if (address === '') {
             address = this.state.telephoneNumberSaved;
         }
+        
         const updatedVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
         let patientRecord = updatedVaccineReceipiantInfo.filter(infoItem => {
             return infoItem.firstName === firstName && infoItem.lastName === lastName;

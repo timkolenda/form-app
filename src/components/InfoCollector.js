@@ -48,6 +48,14 @@ class InfoCollector extends Component {
         });
     }
 
+    selectNameValueSource = (name) => {
+        if (!this.props.autoApproveScreening) {
+            return this.props[`default${name}`];
+        } else {
+            return this.state[`info${name}`];
+        }
+    }
+
     setConsentProvider = () => {
         console.log('run cdm');
         if (this.props.consentProvider === "") {
@@ -70,22 +78,47 @@ class InfoCollector extends Component {
         }
     } 
 
+    renderConsentCheckbox = () => {
+        if (this.props.consenterIsRecievingVaccine || this.props.consentProvider) {
+            return (
+                <div className="infoCollector__section infoCollector__section--column">
+                    <p>{`I ${this.props.consentProvider} give consent for the above patient to receive their vaccination.`}</p>
+                    <div className="input__checkBox input__checkBox--addSpaceBelow">
+                        <label htmlFor="consentGranted">Check for yes</label>
+                        <input type="checkbox" id="consentGranted"  onClick={this.handleCheckBoxChange}/>
+                    </div>
+                </div>
+            );
+        }
+    }
+
 
     handleAddDependant = () => {
         if (this.props.autoApproveScreening) {
             this.props.removeDefaultNames();
         }
-        if (this.state.saveAddress) {
+        if (this.state.saveAddress && !this.props.addressSaved) {
             this.props.storeReusableInfo(this.state.saveAddress, 'address', this.state.address);
         }
-        if (this.state.saveNumber) {
+        if (this.state.saveNumber && !this.props.telephoneNumberSaved) {
             this.props.storeReusableInfo(this.state.saveNumber, 'telephoneNumber', this.state.telephoneNumber);
         }
         if (!this.props.consentProvider) {
             console.log('run hd');
             this.props.addConsentProvider(`${this.state.infoFirstName} ${this.state.infoLastName}`);
         }
-        if(this.props.aVaccineRecipiantHasBeenCreated || this.props.autoApproveScreening){
+        if (!this.props.autoApproveScreening) {
+            this.props.addPatientDetails({
+                firstName: this.props.defaultFirstName,
+                lastName: this.props.defaultLastName,
+                healthCard: this.state.healthCard,
+                dateOfBirth: this.state.dateOfBirth,
+                address: this.state.address,
+                telephoneNumber: this.state.telephoneNumber,
+                consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
+                consentGranted: this.state.consentGranted
+            });
+        } else if (this.props.aVaccineRecipiantHasBeenCreated || this.props.autoApproveScreening) {
             this.props.addPatientDetails({
                 firstName: this.state.infoFirstName,
                 lastName: this.state.infoLastName,
@@ -96,7 +129,7 @@ class InfoCollector extends Component {
                 consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
                 consentGranted: this.state.consentGranted
             });
-        }
+        } 
         if (!this.props.autoApproveScreening) {
             this.props.showScreening();
         } else {
@@ -111,21 +144,35 @@ class InfoCollector extends Component {
             dateOfBirth: '',
             address: '',
             healthCard: '',
-            telephoneNumber: ''
+            telephoneNumber: '',
+            consentGranted: false
         });
     }
 
     handleComplete = () => {
-        this.props.addPatientDetails({
-            firstName: this.state.infoFirstName,
-            lastName: this.state.infoLastName,
-            healthCard: this.state.healthCard,
-            dateOfBirth: this.state.dateOfBirth,
-            address: this.state.address,
-            telephoneNumber: this.state.telephoneNumber,
-            consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
-            consentGranted: this.state.consentGranted
-        });
+        if (!this.props.autoApproveScreening) {
+            this.props.addPatientDetails({
+                firstName: this.props.defaultFirstName,
+                lastName: this.props.defaultLastName,
+                healthCard: this.state.healthCard,
+                dateOfBirth: this.state.dateOfBirth,
+                address: this.state.address,
+                telephoneNumber: this.state.telephoneNumber,
+                consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
+                consentGranted: this.state.consentGranted
+            });
+        } else {
+            this.props.addPatientDetails({
+                firstName: this.state.infoFirstName,
+                lastName: this.state.infoLastName,
+                healthCard: this.state.healthCard,
+                dateOfBirth: this.state.dateOfBirth,
+                address: this.state.address,
+                telephoneNumber: this.state.telephoneNumber,
+                consentProvider: `${this.state.infoFirstName} ${this.state.infoLastName}`,
+                consentGranted: this.state.consentGranted
+            });
+        }
     }
     
     componentDidMount() {
@@ -143,13 +190,13 @@ class InfoCollector extends Component {
                         <div className="infoCollector__infoItem">
                             <div className="input input__text">
                                 <label htmlFor="infoFirstName">First Name</label>
-                                <input type="text" id="infoFirstName" onChange={this.handleChange} value={this.props.defaultFirstName ? this.props.defaultFirstName : this.state.firstName} />
+                                <input type="text" id="infoFirstName" onChange={this.handleChange} value={this.state.infoFirstName} placeholder={this.props.defaultFirstName}/>
                             </div>
                         </div>
                         <div className="infoCollector__infoItem">
                             <div className="input input__text input__text--toEnd">
                                 <label htmlFor="infoLastName">Last Name</label>
-                                <input type="text" id="infoLastName" onChange={this.handleChange} value={this.props.defaultLastName ? this.props.defaultLastName : this.state.lastName}/>
+                                <input type="text" id="infoLastName" onChange={this.handleChange} value={this.state.infoLastName} placeholder={this.props.defaultLastName}/>
                             </div>
                         </div>
                     </div>
@@ -162,7 +209,7 @@ class InfoCollector extends Component {
                                     {this.props.dependantsExist ? 
                                     <div className="input__checkBox">
                                         <label htmlFor="saveAddress">Use this address for dependant(s)?</label>
-                                        <input type="checkbox" id="saveAddress" name="address" onClick={this.handleCheckBoxChange}/>
+                                        <input type="checkbox" id="saveAddress" name="address" onClick={this.handleCheckBoxChange} value={this.state.consentGranted}/>
                                     </div>
                                     : null}
                                 </div>
@@ -230,20 +277,14 @@ class InfoCollector extends Component {
                         </div>
                     </div>
                     : null }
-                    <div className="infoCollector__section infoCollector__section--column">
-                        <p>{`I ${this.props.consentProvider} give consent for the above patient to receive their vaccination.`}</p>
-                        <div className="input__checkBox input__checkBox--addSpaceBelow">
-                            <label htmlFor="consentGranted">Check for yes</label>
-                            <input type="checkbox" id="consentGranted"  onClick={this.handleCheckBoxChange}/>
-                        </div>
-                    </div>
+                    {this.renderConsentCheckbox()}
                 </form>
                 {this.props.dependantsExist ? 
                 <Button 
                     description="Add a dependant"
                     onClickAction={this.handleAddDependant}
                 /> : null}
-                {(this.props.dependantsExist && this.props.numberOfPatients > 1) || !this.props.dependantsExist || (!this.props.consenterIsRecievingVaccine && this.props.numberOfPatients > 0) ?
+                {(this.props.dependantsExist && this.props.consentProvider) || !this.props.dependantsExist || (!this.props.consenterIsRecievingVaccine && this.props.numberOfPatients > 0) ?
                 <Button 
                     description="Complete" 
                     onClickAction={this.handleComplete}
