@@ -7,6 +7,7 @@ import Button from './Button';
 import WhoIsGettingVaccinated from './WhoIsGettingVaccinated';
 import Screening from './Screening';
 import InfoCollector from './InfoCollector';
+import DisplayResults from './DisplayResults';
 
 
 
@@ -16,6 +17,7 @@ class App extends Component {
         showWhoIsGettingVaccinatedOptions: true,
         showScreeningQuestions: false,
         showInfoCollector: false,
+        showDisplayResults: false,
         questionNumber: 0,
         consentProvider: '',
         consenterIsRecievingVaccine: false,
@@ -73,12 +75,6 @@ class App extends Component {
 
     addPatientDetails = ({ firstName, lastName, healthCard, dateOfBirth, address, telephoneNumber, consentProvider, consentGranted }) => {
         console.log(firstName, lastName);
-        // if (firstName = '') {
-        //     firstName = this.state.defaultFirstName;
-        // }
-        // if (lastName = '') {
-        //     lastName = this.state.defaultLastName;
-        // }
         if (this.state.consentProvider === '') {
             console.log('run apd');
             this.addConsentProvider(consentProvider);
@@ -87,7 +83,7 @@ class App extends Component {
             telephoneNumber = this.state.telephoneNumberSaved;
         }
         if (address === '') {
-            address = this.state.telephoneNumberSaved;
+            address = this.state.addressSaved;
         }
         
         const updatedVaccineReceipiantInfo = this.state.vaccineReceipiantInfo;
@@ -133,7 +129,8 @@ class App extends Component {
         this.setState({
             showWhoIsGettingVaccinatedOptions: false,
             showInfoCollector: false,
-            showScreeningQuestions: true
+            showScreeningQuestions: true,
+            showDisplayResults: false
         });
     } 
 
@@ -141,9 +138,19 @@ class App extends Component {
         this.setState({
             showWhoIsGettingVaccinatedOptions: false,
             showInfoCollector: true,
-            showScreeningQuestions: false
+            showScreeningQuestions: false,
+            showDisplayResults: false
         });
     } 
+
+    showDisplayResults = () => {
+        this.setState({
+            showWhoIsGettingVaccinatedOptions: false,
+            showInfoCollector: false,
+            showScreeningQuestions: false,
+            showDisplayResults: true
+        });
+    }
 
     resetForm = () => {
         this.setState({
@@ -200,7 +207,12 @@ class App extends Component {
                         numberOfPatients={this.state.vaccineReceipiantInfo.length}
                         autoApproveScreening={this.state.autoApproveScreening}
                         removeDefaultNames={this.removeDefaultNames}
+                        showDisplayResults={this.showDisplayResults}
                     / > : null}
+                    {this.state.showDisplayResults ? 
+                    <DisplayResults 
+                        vaccineReceipiantInfo={this.state.vaccineReceipiantInfo}
+                    /> : null}
                 </div>
             </div>
         );

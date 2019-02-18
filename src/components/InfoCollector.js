@@ -147,6 +147,8 @@ class InfoCollector extends Component {
             telephoneNumber: '',
             consentGranted: false
         });
+        const consentCheckBox = document.querySelector("#consentGranted");
+        consentCheckBox.checked = false;
     }
 
     handleComplete = () => {
@@ -173,6 +175,7 @@ class InfoCollector extends Component {
                 consentGranted: this.state.consentGranted
             });
         }
+        this.props.showDisplayResults();
     }
     
     componentDidMount() {
